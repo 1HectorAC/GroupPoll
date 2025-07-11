@@ -1,16 +1,30 @@
+import { useContext, useState } from "react";
+import { SocketContext } from "../context/SocketContext";
 
 const Home = () => {
+    const [room, setRoom] = useState();
+    const socket = useContext(SocketContext);
+    
+    function onCreateClick() {
+        //need to check if room exists before (shouldnt exists)
+        socket.emit('join_room', room);
+        //navigate to create page
+    }
+    function onJoinClick(){
+        //need to check if room exists before (should exists)
+        socket.emit('join_room', room);
+        //navigate to Join page
+    }
     return (
         <div>
             <h1>Group Poll Home</h1>
             <p>Enter Group</p>
-            <input type='text' />
-            <p>Create</p>
-            <input type="text" />
-            <p>Join</p>
-            <input type="text" />
-            <br/> <br/>
-            <button type='submit'>Enter</button>
+            <input type='text' onChange={(e) => setRoom(e.target.value)} />
+            <br/>
+            <button onClick={onCreateClick}>Create</button>
+            <br/><br/>
+            <button onClick={onJoinClick}>Join</button>
+            
         </div>
     );
 };
