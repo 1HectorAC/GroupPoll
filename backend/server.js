@@ -12,9 +12,17 @@ app.get('/', (req,res) => {
 
 io.on('connection', socket => {
 	console.log(socket.id + " connected");
+	
+	socket.on('join_room', (roomName) => {
+		console.log(socket.id + "joined room: " + roomName);
 
+	})
+	socket.on('poll', data => {
+		console.log('Poll sent, data:' + data);
 
-	io.on('disconnect', () => {
+	})
+
+	socket.on('disconnect', () => {
 		console.log(socket.id + " disconnected");
 	})
 })
