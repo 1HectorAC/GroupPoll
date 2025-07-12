@@ -1,14 +1,16 @@
 import { useContext, useState } from "react";
 import { SocketContext } from "../context/SocketContext";
+import {useNavigate} from 'react-router-dom';
 
 const Home = () => {
     const [room, setRoom] = useState();
     const socket = useContext(SocketContext);
+    const navigate = useNavigate();
     
     function onCreateClick() {
         //need to check if room exists before (shouldnt exists)
         socket.emit('join_room', room);
-        //navigate to create page
+        navigate('/Create');
     }
     function onJoinClick(){
         //need to check if room exists before (should exists)

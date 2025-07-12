@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home';
 import { socket, SocketContext } from './context/SocketContext';
 import { useEffect, useState } from 'react';
+import Create from './pages/Create';
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   useEffect(() => {
@@ -34,6 +35,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path='/' element={<Home />} />
+            <Route path='/Create' element={<Create/> } />
           </Routes>
         </BrowserRouter>
       </SocketContext.Provider>
