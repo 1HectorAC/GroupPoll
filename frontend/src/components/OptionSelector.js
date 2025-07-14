@@ -2,7 +2,6 @@ const OptionSelector = (props) => {
     const optionsList = props.options.split(',');
     return (
         <div>
-            <p>{props.response}</p>
             {optionsList.map((opt, i) =>
                 <div key={i}>
                     <label>

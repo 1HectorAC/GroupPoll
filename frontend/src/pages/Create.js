@@ -1,6 +1,7 @@
-import {useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { SocketContext } from "../context/SocketContext";
 import OptionSelector from "../components/OptionSelector";
+import { useNavigate } from "react-router-dom";
 
 const Create = () => {
     const [question, setQuestion] = useState(null);
@@ -9,7 +10,9 @@ const Create = () => {
     const [responses, setResponses] = useState(null);
     const [userResponseCount, setUserResponseCount] = useState(0);
     const [response, setResponse] = useState(null);
+    const [doneCheck, setDoneCheck] = useState(false);
     const socket = useContext(SocketContext);
+    const navigate = useNavigate();
 
     function onPollClick() {
         socket.emit('poll', { question: question, options: options });
@@ -23,21 +26,40 @@ const Create = () => {
         setResponses(initialResponses);
     };
     function onSubmitResponseClick() {
-        if(response)
+        console.log('submited responses');
+        if (response) {
+            let test = [...responses];
+            test[response] = test[response] + 1;
+            setResponses(test);
+            setDoneCheck(true);
+            socket.emit('results', { responses: responses });
             console.log(response);
+            //error updating the responses, does show correctly in results
+            console.log(responses);
+        }
+
+
+    }
+    function onDoneClick() {
+        socket.emit('leave_rooms')
+        navigate('/');
     }
 
     useEffect(() => {
         socket.on('user_enter', () => {
             setTotalUsers(totalUsers + 1);
         })
-        socket.on('user_response', (data) => {
+        socket.on('get_user_response', (data) => {
             setUserResponseCount(userResponseCount + 1);
+            let test = [...responses];
+            test[data] = test[data] + 1;
+            setResponses(test);
         })
         return () => {
-            socket.off('user_enter')
+            socket.off('user_enter');
+            socket.off('get_user_response');
         };
-    }, [socket, totalUsers, userResponseCount]);
+    }, [socket, totalUsers, userResponseCount, responses]);
 
     return (
         <div>
@@ -51,12 +73,22 @@ const Create = () => {
             <button onClick={onPollClick}>Enter</button>
             {responses &&
                 <div>
-                    <hr /> 
-                    <OptionSelector  options={options} response={response} setResponse={setResponse}/>
+                    <hr />
+                    <OptionSelector options={options} response={response} setResponse={setResponse} />
                     <p>TotalResponses:{userResponseCount}/{totalUsers}</p>
                     <button onClick={onSubmitResponseClick}>Enter</button>
                 </div>
             }
+            {doneCheck &&
+                <div>
+                    <h3>Results</h3>
+                    {options.split(',').map((opt, i) =>
+                        <p key={`test${i}`}>{opt} : {responses[i]}</p>
+                    )}
+                    <button onClick={onDoneClick}>Back Home</button>
+                </div>
+            }
+
         </div>
     );
 };

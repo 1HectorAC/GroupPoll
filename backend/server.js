@@ -10,20 +10,49 @@ app.get('/', (req,res) => {
 	res.send('<h1>Test of Node App.</h1>')
 });
 
+function getFirstRoom(s) {
+	const rooms = s.rooms;
+	const room = ([...rooms].filter(i => i != s.id))[0];
+	return room;
+};
+
 io.on('connection', socket => {
 	console.log(socket.id + " connected");
 	
 	socket.on('join_room', (roomName) => {
-		console.log(socket.id + "joined room: " + roomName);
-
+		console.log("room joined, user:" + socket.id + ", room: " + roomName);
+		socket.join(roomName);
+		socket.to(roomName).emit('user_enter');
 	})
 	socket.on('poll', data => {
 		console.log('Poll sent, data:' + data);
+		const room = getFirstRoom(socket);
+		socket.to(room).emit('get_poll', data);
+	})
 
+	socket.on('user_response', data => {
+		console.log('Send response by user, user:' + socket.id + ', data:' + data);
+		const room = getFirstRoom(socket);
+		socket.to(room).emit('get_user_response', data);
+	})
+
+	socket.on('results', (data) => {
+		console.log('Results sent, data:' + data)
+		const room = getFirstRoom(socket);
+		socket.to(room).emit('get_results', data);
+	})
+
+	socket.on('leave_rooms', () => {
+		console.log("Leaving rooms, user:" + socket.id)
+		socket.rooms.forEach((room) => {
+			if(room != socket.id){
+				socket.leave(room);
+			}
+		})
 	})
 
 	socket.on('disconnect', () => {
-		console.log(socket.id + " disconnected");
+		console.log("disconnected, user:" + socket.id);
 	})
 })
 
