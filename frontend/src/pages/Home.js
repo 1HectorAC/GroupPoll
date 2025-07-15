@@ -15,7 +15,8 @@ const Home = () => {
     function onJoinClick(){
         //need to check if room exists before (should exists)
         socket.emit('join_room', room);
-        //navigate to Join page
+        navigate('/Join');
+
     }
     return (
         <div>

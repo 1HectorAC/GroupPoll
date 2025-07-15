@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import { socket, SocketContext } from './context/SocketContext';
 import { useEffect, useState } from 'react';
 import Create from './pages/Create';
+import Join from './pages/Join';
 function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   useEffect(() => {
@@ -35,7 +36,8 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path='/' element={<Home />} />
-            <Route path='/Create' element={<Create/> } />
+            <Route path='/Create' element={<Create /> } />
+            <Route path='/Join' element={<Join /> } />
           </Routes>
         </BrowserRouter>
       </SocketContext.Provider>
