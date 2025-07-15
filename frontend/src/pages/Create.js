@@ -15,8 +15,6 @@ const Create = () => {
     const navigate = useNavigate();
 
     function onPollClick() {
-        socket.emit('poll', { question: question, options: options });
-
         // setup responses with initial values
         const totalOptions = options.split(',').length;
         let initialResponses = [];
@@ -24,15 +22,21 @@ const Create = () => {
             initialResponses.push(0);
         }
         setResponses(initialResponses);
+
+        socket.emit('poll', { question: question, options: options });
     };
     function onSubmitResponseClick() {
         console.log('submited responses');
-        if (response) {
-            let test = [...responses];
-            test[response] = test[response] + 1;
+        console.log('responses: ' + responses);
+        console.log('response: ' + response);
+        if (response !== null) {
+            const test = [...responses];
+            const x = response;
+            test[x] = test[x] + 1;
+            console.log("test: " + test);
             setResponses(test);
-            setDoneCheck(true);
-            socket.emit('results', { responses: responses });
+            //setDoneCheck(true);
+            //socket.emit('results', { responses: responses });
             console.log(response);
             //error updating the responses, does show correctly in results
             console.log(responses);
