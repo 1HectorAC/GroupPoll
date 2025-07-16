@@ -20,14 +20,14 @@ const Home = () => {
     }
     return (
         <div>
-            <h1>Group Poll Home</h1>
-            <p>Enter Group</p>
-            <input type='text' onChange={(e) => setRoom(e.target.value)} />
-            <br/>
-            <button onClick={onCreateClick}>Create</button>
+            <h1>Group Poll</h1>
+            <hr/>
+            <h3>Room</h3>
+            <input type='text' onChange={(e) => setRoom(e.target.value)} placeholder="Enter room name here"/>
             <br/><br/>
+            <button onClick={onCreateClick}>Create</button>
+            <span>   </span>
             <button onClick={onJoinClick}>Join</button>
-            
         </div>
     );
 };

@@ -4,13 +4,15 @@ import OptionSelector from "../components/OptionSelector";
 import { useNavigate } from "react-router-dom";
 
 const Create = () => {
+    const screenStates = { START: 1, QUESTION: 2, RESULT: 3 };
+    const [screenState, setScreenState] = useState(screenStates.START);
     const [question, setQuestion] = useState(null);
     const [options, setOptions] = useState(null);
     const [totalUsers, setTotalUsers] = useState(1);
-    const [responses, setResponses] = useState(null);
     const [userResponseCount, setUserResponseCount] = useState(0);
     const [response, setResponse] = useState(null);
-    const [doneCheck, setDoneCheck] = useState(false);
+    const [responses, setResponses] = useState([]);
+
     const socket = useContext(SocketContext);
     const navigate = useNavigate();
 
@@ -24,24 +26,19 @@ const Create = () => {
         setResponses(initialResponses);
 
         socket.emit('poll', { question: question, options: options });
+
+        setScreenState(screenStates.QUESTION);
     };
     function onSubmitResponseClick() {
-        console.log('submited responses');
-        console.log('responses: ' + responses);
-        console.log('response: ' + response);
         if (response !== null) {
-            const test = [...responses];
-            const x = response;
-            test[x] = test[x] + 1;
-            console.log("test: " + test);
-            setResponses(test);
-            //setDoneCheck(true);
-            //socket.emit('results', { responses: responses });
-            console.log(response);
-            //error updating the responses, does show correctly in results
-            console.log(responses);
-        }
+            // Adding creators response to the responses array
+            const temp = [...responses];
+            temp[response] = temp[response] + 1;
+            setResponses(temp);
 
+            socket.emit('results', { responses: responses });
+            setScreenState(screenStates.RESULT);
+        }
 
     }
     function onDoneClick() {
@@ -55,9 +52,9 @@ const Create = () => {
         })
         socket.on('get_user_response', (data) => {
             setUserResponseCount(userResponseCount + 1);
-            let test = [...responses];
-            test[data] = test[data] + 1;
-            setResponses(test);
+            let temp = [...responses];
+            temp[data] = temp[data] + 1;
+            setResponses(temp);
         })
         return () => {
             socket.off('user_enter');
@@ -67,23 +64,31 @@ const Create = () => {
 
     return (
         <div>
-            <h1>Create Page</h1>
-            <h5>Question</h5>
-            <input type='text' onChange={(e) => setQuestion(e.target.value)} />
-            <h5>Option</h5>
-            <input type='text' onChange={(e) => setOptions(e.target.value)} />
-            <br />
-            <p>Total Users:{totalUsers}</p>
-            <button onClick={onPollClick}>Enter</button>
-            {responses &&
+            <h1>Poll Creator</h1>
+            <hr />
+            {screenState === screenStates.START &&
                 <div>
-                    <hr />
+                    <h3>Question</h3>
+                    <input type='text' onChange={(e) => setQuestion(e.target.value)} placeholder="Enter Question Here" />
+                    <h3>Options</h3>
+                    <p>(seperate with commas)</p>
+                    <input type='text' onChange={(e) => setOptions(e.target.value)} placeholder="Ex: one,two,three" />
+                    <br />
+                    <p>Users Joined:{totalUsers}</p>
+                    <p>Click enter when all users have joined</p>
+                    <button onClick={onPollClick}>Enter</button>
+                </div>
+            }
+            {screenState === screenStates.QUESTION &&
+                <div>
+                    <h3>Response</h3>
+                    <p>Question: {question}</p>
                     <OptionSelector options={options} response={response} setResponse={setResponse} />
-                    <p>TotalResponses:{userResponseCount}/{totalUsers}</p>
+                    <p>Responses (Not counting creator): {userResponseCount}/{totalUsers}</p>
                     <button onClick={onSubmitResponseClick}>Enter</button>
                 </div>
             }
-            {doneCheck &&
+            {screenState === screenStates.RESULT &&
                 <div>
                     <h3>Results</h3>
                     {options.split(',').map((opt, i) =>
@@ -92,7 +97,6 @@ const Create = () => {
                     <button onClick={onDoneClick}>Back Home</button>
                 </div>
             }
-
         </div>
     );
 };
