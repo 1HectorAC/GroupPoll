@@ -10,7 +10,8 @@ const Home = () => {
     function onCreateClick() {
         //need to check if room exists before (shouldnt exists)
         socket.emit('join_room', room);
-        navigate('/Create');
+        const data = {room:room};
+        navigate('/Create', {state:data});
     }
     function onJoinClick(){
         //need to check if room exists before (should exists)

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import { SocketContext } from "../context/SocketContext";
 import OptionSelector from "../components/OptionSelector";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Create = () => {
     const screenStates = { START: 1, QUESTION: 2, RESULT: 3 };
@@ -12,6 +12,8 @@ const Create = () => {
     const [userResponseCount, setUserResponseCount] = useState(0);
     const [response, setResponse] = useState(null);
     const [responses, setResponses] = useState([]);
+    const location = useLocation();
+    const {room} = location.state || '';
 
     const socket = useContext(SocketContext);
     const navigate = useNavigate();
@@ -47,6 +49,19 @@ const Create = () => {
     }
 
     useEffect(() => {
+        //add check if part of a room?
+        //maybe send room instead to see if exits
+        /*
+        socket.emit('room_check');
+        socket.on('room_check_back',(data) => {
+            
+            if(data <= 1){
+                useNavigate('/');
+            }
+        })*/
+        if(typeof room === "undefined")
+            navigate('/');
+
         socket.on('user_enter', () => {
             setTotalUsers(totalUsers + 1);
         })
@@ -60,11 +75,12 @@ const Create = () => {
             socket.off('user_enter');
             socket.off('get_user_response');
         };
-    }, [socket, totalUsers, userResponseCount, responses]);
+    }, [socket, totalUsers, userResponseCount, responses, room, navigate]);
 
     return (
         <div>
             <h1>Poll Creator</h1>
+            <p>Room: {room}</p>
             <hr />
             {screenState === screenStates.START &&
                 <div>
