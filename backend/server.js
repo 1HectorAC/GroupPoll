@@ -19,10 +19,23 @@ function getFirstRoom(s) {
 io.on('connection', socket => {
 	console.log(socket.id + " connected");
 	
-	socket.on('join_room', (roomName) => {
-		console.log("room joined, user:" + socket.id + ", room: " + roomName);
-		socket.join(roomName);
-		socket.to(roomName).emit('user_enter');
+	socket.on('join_room', (data) => {
+		console.log("Atempt Join Room, user:" + socket.id + ", room: " + data.room + " userType:" + data.user);
+		const roomExists = io.sockets.adapter.rooms.has(data.room);
+		if(data.user === 'creator' && !roomExists){
+			socket.join(data.room);
+			socket.emit('join_room_confirmation', {check:true, userType:data.user})
+		}
+		else if(data.user === 'other' && roomExists){
+			socket.join(data.room);
+			socket.to(data.room).emit('user_enter');
+			socket.emit('join_room_confirmation', {check:true, userType:data.user})
+		}
+		else{
+			socket.emit('join_room_confirmation', {check:false, userType:data.user})
+			console.log('Join room fail');
+
+		}
 	})
 	socket.on('poll', data => {
 		console.log('Poll sent, data:' + data);
@@ -49,6 +62,13 @@ io.on('connection', socket => {
 				socket.leave(room);
 			}
 		})
+	})
+
+	socket.on('room_check', () => {
+		console.log('room check for: ' + socket.id);
+		const room = getFirstRoom(socket) || '';
+		console.log('room: ' + room);
+		socket.emit('room_check_back', room)
 	})
 
 	socket.on('disconnect', () => {

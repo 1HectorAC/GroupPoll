@@ -49,16 +49,13 @@ const Create = () => {
     }
 
     useEffect(() => {
-        //add check if part of a room?
-        //maybe send room instead to see if exits
-        /*
+        //Check if in room, need in cases where page is reloaded and auto left room.
         socket.emit('room_check');
         socket.on('room_check_back',(data) => {
-            
-            if(data <= 1){
-                useNavigate('/');
+            if(data !== room){
+                navigate('/');
             }
-        })*/
+        })
         if(typeof room === "undefined")
             navigate('/');
 
@@ -74,6 +71,7 @@ const Create = () => {
         return () => {
             socket.off('user_enter');
             socket.off('get_user_response');
+            socket.off('room_check_back');
         };
     }, [socket, totalUsers, userResponseCount, responses, room, navigate]);
 
