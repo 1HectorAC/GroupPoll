@@ -38,7 +38,8 @@ const Create = () => {
             temp[response] = temp[response] + 1;
             setResponses(temp);
 
-            socket.emit('results', { responses: responses });
+            // Need to use temp since setting response is async, so using response would run at same time
+            socket.emit('results', { responses: temp });
             setScreenState(screenStates.RESULT);
         }
 
@@ -95,8 +96,8 @@ const Create = () => {
             }
             {screenState === screenStates.QUESTION &&
                 <div>
-                    <h3>Response</h3>
-                    <p>Question: {question}</p>
+                    <h3>Question: {question}</h3>
+                   
                     <OptionSelector options={options} response={response} setResponse={setResponse} />
                     <p>Responses (Not counting creator): {userResponseCount}/{totalUsers}</p>
                     <button onClick={onSubmitResponseClick}>Enter</button>

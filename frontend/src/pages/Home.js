@@ -25,7 +25,7 @@ const Home = () => {
                 if(confirm_data.userType === 'creator')
                     navigate('/Create', {state:data})
                 else if(confirm_data.userType === 'other'){
-                    navigate('/Join');
+                    navigate('/Join', {state:data});
                 }
             }
             else
