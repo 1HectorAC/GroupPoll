@@ -2,8 +2,9 @@ const OptionSelector = (props) => {
     const optionsList = props.options.split(',');
     return (
         <div>
+            <h3>Question: {props.question}</h3>
             {optionsList.map((opt, i) =>
-                <div key={i}>
+                <div key={'option' + i}>
                     <label>
                         <input
                             type="radio"

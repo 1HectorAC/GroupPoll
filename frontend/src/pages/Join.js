@@ -2,6 +2,8 @@ import { useContext, useState } from "react";
 import { SocketContext } from "../context/SocketContext";
 import OptionSelector from "../components/OptionSelector";
 import { useLocation, useNavigate } from "react-router-dom";
+import ResultsDisplay from "../components/ResultsDisplay";
+
 
 const Join = () => {
     const screenStates = { START: 1, QUESTION: 2, WAITING: 3, ANSWER: 4 };
@@ -61,18 +63,14 @@ const Join = () => {
             {screenState === screenStates.START && <p>Waiting for creator to send Poll...</p>}
             {screenState === screenStates.QUESTION &&
                 <div>
-                    <h3>Question: {question}</h3>
-                    <OptionSelector options={options} response={response} setResponse={setResponse} />
+                    <OptionSelector question={question} options={options} response={response} setResponse={setResponse} />
                     <button onClick={onSubmitResponseClick}>Enter</button>
                 </div>
             }
             {screenState === screenStates.WAITING && <p>Waiting on poll to end...</p>}
             {screenState === screenStates.ANSWER &&
                 <div>
-                    <h3>Results</h3>
-                    {options.split(',').map((opt, i) =>
-                        <p key={`test${i}`}>{opt} : {responses[i]}</p>
-                    )}
+                    <ResultsDisplay options={options} responses={responses} />
                     <button onClick={onDoneClick}>Back Home</button>
                 </div>
             }

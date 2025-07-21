@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { SocketContext } from "../context/SocketContext";
 import OptionSelector from "../components/OptionSelector";
 import { useLocation, useNavigate } from "react-router-dom";
+import ResultsDisplay from "../components/ResultsDisplay";
 
 const Create = () => {
     const screenStates = { START: 1, QUESTION: 2, RESULT: 3 };
@@ -96,19 +97,15 @@ const Create = () => {
             }
             {screenState === screenStates.QUESTION &&
                 <div>
-                    <h3>Question: {question}</h3>
-                   
-                    <OptionSelector options={options} response={response} setResponse={setResponse} />
-                    <p>Responses (Not counting creator): {userResponseCount}/{totalUsers}</p>
+                    <OptionSelector question={question} options={options} response={response} setResponse={setResponse} />
                     <button onClick={onSubmitResponseClick}>Enter</button>
+                    
+                    <p>Responses: {userResponseCount}/{totalUsers}</p>
                 </div>
             }
             {screenState === screenStates.RESULT &&
                 <div>
-                    <h3>Results</h3>
-                    {options.split(',').map((opt, i) =>
-                        <p key={`test${i}`}>{opt} : {responses[i]}</p>
-                    )}
+                    <ResultsDisplay options={options} responses={responses} />
                     <button onClick={onDoneClick}>Back Home</button>
                 </div>
             }
