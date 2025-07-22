@@ -17,30 +17,33 @@ function App() {
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     return () => {
-        socket.off('connect', onConnect);
-        socket.off('disconnect', onDisconnect);
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
     };
 
-  },[])
+  }, [])
 
   useEffect(() => {
-      socket.connect();
-      return () => {
-        socket.disconnect();
-      }
-    },[]);
+    socket.connect();
+    return () => {
+      socket.disconnect();
+    }
+  }, []);
   return (
 
     <div className="App">
-      <SocketContext.Provider value={socket}>
-        <BrowserRouter>
-          <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/Create' element={<Create /> } />
-            <Route path='/Join' element={<Join /> } />
-          </Routes>
-        </BrowserRouter>
-      </SocketContext.Provider>
+      <div className='InApp'>
+        <SocketContext.Provider value={socket}>
+          <BrowserRouter>
+            <Routes>
+              <Route path='/' element={<Home />} />
+              <Route path='/Create' element={<Create />} />
+              <Route path='/Join' element={<Join />} />
+            </Routes>
+          </BrowserRouter>
+        </SocketContext.Provider>
+      </div>
+
 
     </div>
   );
