@@ -63,6 +63,18 @@ io.on('connection', socket => {
 			}
 		})
 	})
+	socket.on('leave_rooms_early', () =>{
+		console.log('Leaving rooms early, users:' + socket.id);
+
+		const roomx = getFirstRoom(socket);
+		socket.to(roomx).emit('left_rooms_early');
+
+		socket.rooms.forEach((room) => {
+			if(room != socket.id){
+				socket.leave(room);
+			}
+		})
+	})
 
 	socket.on('room_check', () => {
 		console.log('room check for: ' + socket.id);

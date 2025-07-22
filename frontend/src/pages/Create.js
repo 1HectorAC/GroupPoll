@@ -64,12 +64,19 @@ const Create = () => {
         socket.on('user_enter', () => {
             setTotalUsers(totalUsers + 1);
         })
+
+        socket.on('left_rooms_early', () => {
+            setTotalUsers(totalUsers - 1);
+
+        })
+        
         socket.on('get_user_response', (data) => {
             setUserResponseCount(userResponseCount + 1);
             let temp = [...responses];
             temp[data] = temp[data] + 1;
             setResponses(temp);
         })
+        
         return () => {
             socket.off('user_enter');
             socket.off('get_user_response');

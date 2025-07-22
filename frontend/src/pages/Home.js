@@ -19,6 +19,7 @@ const Home = () => {
     }
 
     useEffect(() => {
+        socket.emit('leave_rooms');
         socket.on('join_room_confirmation', confirm_data => {
             if(confirm_data.check){
                 const data = {room:room};
