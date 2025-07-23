@@ -14,12 +14,20 @@ const Create = () => {
     const [response, setResponse] = useState(null);
     const [responses, setResponses] = useState([]);
     const location = useLocation();
-    const {room} = location.state || '';
+    const { room } = location.state || '';
+    const [error, setError] = useState(null);
 
     const socket = useContext(SocketContext);
     const navigate = useNavigate();
 
     function onPollClick() {
+        if (!question || !options) {
+            setError('Need questions and options');
+            return;
+        }
+        else{
+            setError(null);
+        }
         // setup responses with initial values
         const totalOptions = options.split(',').length;
         let initialResponses = [];
@@ -33,16 +41,22 @@ const Create = () => {
         setScreenState(screenStates.QUESTION);
     };
     function onSubmitResponseClick() {
-        if (response !== null) {
-            // Adding creators response to the responses array
-            const temp = [...responses];
-            temp[response] = temp[response] + 1;
-            setResponses(temp);
-
-            // Need to use temp since setting response is async, so using response would run at same time
-            socket.emit('results', { responses: temp });
-            setScreenState(screenStates.RESULT);
+        if (!response) {
+            setError('Need to select an option');
+            return;
         }
+        else{
+            setError(null);
+        }
+
+        // Adding creators response to the responses array
+        const temp = [...responses];
+        temp[response] = temp[response] + 1;
+        setResponses(temp);
+
+        // Need to use temp since setting response is async, so using response would run at same time
+        socket.emit('results', { responses: temp });
+        setScreenState(screenStates.RESULT);
 
     }
     function onDoneClick() {
@@ -53,12 +67,12 @@ const Create = () => {
     useEffect(() => {
         //Check if in room, need in cases where page is reloaded and auto left room.
         socket.emit('room_check');
-        socket.on('room_check_back',(data) => {
-            if(data !== room){
+        socket.on('room_check_back', (data) => {
+            if (data !== room) {
                 navigate('/');
             }
         })
-        if(typeof room === "undefined")
+        if (typeof room === "undefined")
             navigate('/');
 
         socket.on('user_enter', () => {
@@ -69,14 +83,14 @@ const Create = () => {
             setTotalUsers(totalUsers - 1);
 
         })
-        
+
         socket.on('get_user_response', (data) => {
             setUserResponseCount(userResponseCount + 1);
             let temp = [...responses];
             temp[data] = temp[data] + 1;
             setResponses(temp);
         })
-        
+
         return () => {
             socket.off('user_enter');
             socket.off('get_user_response');
@@ -106,7 +120,7 @@ const Create = () => {
                 <div>
                     <OptionSelector question={question} options={options} response={response} setResponse={setResponse} />
                     <button onClick={onSubmitResponseClick}>Enter</button>
-                    
+
                     <p>Responses: {userResponseCount}/{totalUsers}</p>
                 </div>
             }
@@ -116,6 +130,7 @@ const Create = () => {
                     <button onClick={onDoneClick}>Back Home</button>
                 </div>
             }
+            {error && <p className="error">{error}</p>}
         </div>
     );
 };

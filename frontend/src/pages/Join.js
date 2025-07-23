@@ -14,10 +14,18 @@ const Join = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { room } = location.state || '';
+    const [error, setError] = useState(null);
 
     const socket = useContext(SocketContext);
 
     function onSubmitResponseClick() {
+        if(!response){
+            setError('Need to select an option');
+            return;
+        }
+        else{
+            setError(null);
+        }
         socket.emit('user_response', response);
         setScreenState(screenStates.WAITING);
 
@@ -87,6 +95,7 @@ const Join = () => {
                     <button onClick={onDoneClick}>Back Home</button>
                 </div>
             }
+            {error && <p className="error">{error}</p>}
         </div>
     );
 };
