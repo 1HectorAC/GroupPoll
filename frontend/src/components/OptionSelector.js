@@ -14,7 +14,7 @@ const OptionSelector = (props) => {
                                     checked={props.response === i}
                                     onChange={(e) => props.setResponse(Number(e.target.value))}
                                 />
-                                <span class="custom-radio"></span>
+                                <span className="custom-radio"></span>
                                 {opt}
                             </label>
                         </div>
