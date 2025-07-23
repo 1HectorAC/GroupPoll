@@ -28,8 +28,16 @@ const Create = () => {
         else{
             setError(null);
         }
+        
         // setup responses with initial values
         const totalOptions = options.split(',').length;
+        if(totalOptions <= 1){
+            setError('Need More options (seperate with comma)');
+            return;
+        }
+        else
+            setError(null);
+        
         let initialResponses = [];
         for (let i = 0; i < totalOptions; i++) {
             initialResponses.push(0);
