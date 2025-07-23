@@ -19,7 +19,7 @@ const Join = () => {
     const socket = useContext(SocketContext);
 
     function onSubmitResponseClick() {
-        if(!response){
+        if(response == null){
             setError('Need to select an option');
             return;
         }

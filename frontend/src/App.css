@@ -34,26 +34,117 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
 
-.InApp{
+.InApp {
   background-color: rgb(210, 213, 237);
   border-radius: 10px;
-  width:50%;
-  padding:20px;
-  margin:20px;
+  width: 50%;
+  padding: 20px;
+  margin: 20px;
 }
+
 /* For screens 768px or smaller */
 @media (max-width: 768px) {
   .InApp {
     width: 80%;
-  
+
   }
 }
 
-.error{
-  color:red;
+.error {
+  color: red;
+}
+
+button {
+  background-color: #4556ad;
+  /* Green background */
+  color: white;
+  /* White text */
+  padding: 10px 20px;
+  /* Padding inside the button */
+  border: none;
+  /* Remove border */
+  border-radius: 5px;
+  /* Rounded corners */
+  cursor: pointer;
+  /* Pointer cursor on hover */
+  font-size: 16px;
+  /* Font size */
+  transition: background-color 0.3s ease;
+  /* Smooth hover effect */
+}
+
+/* Hover effect */
+button:hover {
+  background-color: #303c78;
+  /* Darker green on hover */
+}
+
+/* Input box styling */
+input[type="text"] {
+  width: 90%;
+  padding: 5px;
+  margin: 5px 0;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 18px;
+  transition: border-color 0.3s ease;
+}
+
+/* Focus effect */
+input[type="text"]:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+
+/* Hide the default radio button */
+input[type="radio"] {
+  display: none;
+}
+
+/* Create a custom radio button */
+.custom-radio {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #376ba2;
+  border-radius: 50%;
+  position: relative;
+  cursor: pointer;
+}
+
+/* Add the inner circle for selected state */
+.custom-radio::after {
+  content: '';
+  width: 12px;
+  height: 12px;
+  background-color: #4556ad;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Show the inner circle when selected */
+input[type="radio"]:checked+.custom-radio::after {
+  opacity: 1;
+}
+
+/* Add a label for better usability */
+label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  cursor: pointer;
 }

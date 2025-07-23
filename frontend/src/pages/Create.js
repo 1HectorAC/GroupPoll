@@ -28,7 +28,7 @@ const Create = () => {
         else{
             setError(null);
         }
-        
+
         // setup responses with initial values
         const totalOptions = options.split(',').length;
         if(totalOptions <= 1){
@@ -49,7 +49,7 @@ const Create = () => {
         setScreenState(screenStates.QUESTION);
     };
     function onSubmitResponseClick() {
-        if (!response) {
+        if (response == null) {
             setError('Need to select an option');
             return;
         }
